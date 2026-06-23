@@ -91,6 +91,12 @@ Or build from source:
 
 The first run downloads the local speech model (~600 MB).
 
+### Optional: MLX Parakeet transcription
+
+Packaged OpenOats builds bundle the `parakeet-mlx` helper, so you do not need to install any global tool to run the Hugging Face `mlx-community/parakeet-tdt-0.6b-v3` model on Apple Silicon. Open Settings → Transcription and choose **Parakeet TDT v3 (MLX)**. The first transcription downloads the MLX weights into Hugging Face's local cache.
+
+When building the app from source, `./scripts/build_swift_app.sh` bundles the helper by default. Set `BUNDLE_MLX_PARAKEET=0` only for fast/offline smoke builds that do not need the MLX option.
+
 ## What you need
 
 - Apple Silicon Mac, macOS 15+

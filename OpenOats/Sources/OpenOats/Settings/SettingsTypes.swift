@@ -336,6 +336,7 @@ enum DiarizationVariant: String, CaseIterable, Identifiable {
 enum TranscriptionModel: String, CaseIterable, Identifiable {
     case parakeetV2
     case parakeetV3
+    case mlxParakeetV3
     case qwen3ASR06B
     case whisperBase
     case whisperSmall
@@ -356,6 +357,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         switch self {
         case .parakeetV2: "Parakeet TDT v2"
         case .parakeetV3: "Parakeet TDT v3"
+        case .mlxParakeetV3: "Parakeet TDT v3 (MLX)"
         case .qwen3ASR06B: "Qwen3 ASR 0.6B"
         case .whisperBase: "Whisper Base"
         case .whisperSmall: "Whisper Small"
@@ -369,6 +371,8 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         switch self {
         case .parakeetV2, .parakeetV3:
             "Transcription requires a one-time model download."
+        case .mlxParakeetV3:
+            "Uses the bundled MLX Parakeet helper. Source builds can bundle it with BUNDLE_MLX_PARAKEET=1."
         case .qwen3ASR06B:
             "Qwen3 ASR requires a one-time model download."
         case .whisperBase:
@@ -389,7 +393,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         case .whisperBase: 142_000_000
         case .whisperSmall: 244_000_000
         case .whisperLargeV3Turbo: 800_000_000
-        case .parakeetV2, .parakeetV3, .qwen3ASR06B: nil
+        case .parakeetV2, .parakeetV3, .mlxParakeetV3, .qwen3ASR06B: nil
         case .assemblyAI, .elevenLabsScribe: nil
         }
     }
@@ -402,7 +406,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         switch self {
         case .qwen3ASR06B:
             "Language Hint"
-        case .parakeetV2, .parakeetV3, .whisperBase, .whisperSmall, .whisperLargeV3Turbo:
+        case .parakeetV2, .parakeetV3, .mlxParakeetV3, .whisperBase, .whisperSmall, .whisperLargeV3Turbo:
             "Locale"
         case .assemblyAI, .elevenLabsScribe:
             "Language Hint"
@@ -415,6 +419,8 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
             "Parakeet TDT v2 is English-only. Use en-US. This language value is still saved with the session and markdown export."
         case .parakeetV3:
             "Parakeet TDT v3 auto-detects speech language. Use this field to set your expected meeting language for metadata and export."
+        case .mlxParakeetV3:
+            "Uses bundled mlx-community/parakeet-tdt-0.6b-v3 support through parakeet-mlx. The locale is saved with the session and export."
         case .qwen3ASR06B:
             "Used as a language hint for Qwen3 ASR and saved with the session. Enter a locale such as en-US, fr-FR, or ja-JP."
         case .whisperBase, .whisperSmall:
@@ -442,6 +448,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         switch self {
         case .parakeetV2: return ParakeetBackend(version: .v2, customVocabulary: customVocabulary)
         case .parakeetV3: return ParakeetBackend(version: .v3, customVocabulary: customVocabulary)
+        case .mlxParakeetV3: return MLXParakeetBackend()
         case .qwen3ASR06B: return Qwen3Backend()
         case .whisperBase: return WhisperKitBackend(variant: .base)
         case .whisperSmall: return WhisperKitBackend(variant: .small)
@@ -457,7 +464,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
         switch self {
         case .whisperBase, .whisperSmall, .whisperLargeV3Turbo:
             10 * 16_000
-        case .parakeetV2, .parakeetV3, .qwen3ASR06B:
+        case .parakeetV2, .parakeetV3, .mlxParakeetV3, .qwen3ASR06B:
             5 * 16_000
         case .assemblyAI, .elevenLabsScribe:
             10 * 16_000  // 10s - fewer API calls, better accuracy per segment
@@ -466,7 +473,7 @@ enum TranscriptionModel: String, CaseIterable, Identifiable {
 
     /// Models suitable for offline batch re-transcription.
     static var batchSuitableModels: [TranscriptionModel] {
-        [.parakeetV2, .parakeetV3, .whisperSmall, .whisperLargeV3Turbo, .qwen3ASR06B]
+        [.parakeetV2, .parakeetV3, .mlxParakeetV3, .whisperSmall, .whisperLargeV3Turbo, .qwen3ASR06B]
     }
 }
 

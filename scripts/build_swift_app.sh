@@ -23,6 +23,7 @@ APP_NAME="OpenOats"
 BUNDLE_ID="com.openoats.app"
 SKIP_SIGN="${SKIP_SIGN:-0}"
 SKIP_INSTALL="${SKIP_INSTALL:-0}"
+BUNDLE_MLX_PARAKEET="${BUNDLE_MLX_PARAKEET:-1}"
 
 echo "=== Building $APP_NAME (Swift) ==="
 
@@ -91,6 +92,34 @@ else
   echo "Warning: no SPM resource bundles found under $SWIFT_DIR/.build"
 fi
 
+# Bundle the MLX Parakeet helper so users do not need to install parakeet-mlx globally.
+# Set BUNDLE_MLX_PARAKEET=0 for fast smoke builds or offline build environments.
+if [[ "$BUNDLE_MLX_PARAKEET" == "1" ]]; then
+  MLX_HELPER_DIR="$APP_DIR/Contents/Resources/MLXParakeet"
+  rm -rf "$MLX_HELPER_DIR"
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "Error: python3 is required to bundle the MLX Parakeet helper" >&2
+    exit 1
+  fi
+
+  echo "Bundling MLX Parakeet helper (parakeet-mlx)"
+  python3 -m venv --copies "$MLX_HELPER_DIR"
+  "$MLX_HELPER_DIR/bin/python" -m pip install --upgrade pip
+  "$MLX_HELPER_DIR/bin/python" -m pip install --upgrade parakeet-mlx
+
+  if [[ ! -x "$MLX_HELPER_DIR/bin/parakeet-mlx" ]]; then
+    echo "Error: parakeet-mlx helper was not installed into $MLX_HELPER_DIR/bin" >&2
+    exit 1
+  fi
+
+  find "$MLX_HELPER_DIR" -type d -name "__pycache__" -prune -exec rm -rf {} +
+  find "$MLX_HELPER_DIR" -type f -name "*.pyc" -delete
+  echo "MLX Parakeet helper bundled at $MLX_HELPER_DIR"
+else
+  echo "Skipping MLX Parakeet helper bundle (BUNDLE_MLX_PARAKEET=0)"
+fi
+
 # Add PkgInfo
 echo -n "APPL????" > "$APP_DIR/Contents/PkgInfo"
 
@@ -139,6 +168,22 @@ else
       # Sign the framework dylib, then the framework bundle
       codesign --force --options runtime --sign "$CODESIGN_IDENTITY" --timestamp "$SPARKLE_FW_BUNDLE/Versions/B/Sparkle"
       codesign --force --options runtime --sign "$CODESIGN_IDENTITY" --timestamp "$SPARKLE_FW_BUNDLE"
+    fi
+
+    # Sign bundled MLX/Python native code before signing the app bundle.
+    MLX_HELPER_DIR="$APP_DIR/Contents/Resources/MLXParakeet"
+    if [[ -d "$MLX_HELPER_DIR" ]]; then
+      while IFS= read -r -d '' executable; do
+        if file "$executable" | grep -Eq 'Mach-O|dynamically linked shared library'; then
+          codesign --force --options runtime --sign "$CODESIGN_IDENTITY" --timestamp "$executable"
+        fi
+      done < <(find "$MLX_HELPER_DIR" -type f -perm -111 -print0)
+
+      while IFS= read -r -d '' library; do
+        if file "$library" | grep -Eq 'Mach-O|dynamically linked shared library'; then
+          codesign --force --options runtime --sign "$CODESIGN_IDENTITY" --timestamp "$library"
+        fi
+      done < <(find "$MLX_HELPER_DIR" \( -name '*.so' -o -name '*.dylib' \) -type f -print0)
     fi
 
     # Sign the main app bundle
