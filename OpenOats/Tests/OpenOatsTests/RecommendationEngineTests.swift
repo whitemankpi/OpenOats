@@ -41,7 +41,7 @@ final class RecommendationEngineTests: XCTestCase {
         )
 
         XCTAssertEqual(recommendation.profile, .transcriptEN)
-        XCTAssertEqual(recommendation.transcriptionModel, .parakeetV2)
+        XCTAssertEqual(recommendation.transcriptionModel, .parakeetV3)
         XCTAssertEqual(recommendation.transcriptionLocale, "en-US")
         XCTAssertNil(recommendation.llmProvider)
         XCTAssertNil(recommendation.selectedModel)
@@ -125,7 +125,7 @@ final class RecommendationEngineTests: XCTestCase {
         )
 
         XCTAssertEqual(recommendation.profile, .localENLight)
-        XCTAssertEqual(recommendation.transcriptionModel, .parakeetV2)
+        XCTAssertEqual(recommendation.transcriptionModel, .parakeetV3)
         XCTAssertEqual(recommendation.llmProvider, .ollama)
         XCTAssertEqual(recommendation.ollamaLLMModel, "phi3.5:3.8b-mini-q4_K_M")
         XCTAssertEqual(recommendation.ollamaBaseURL, "http://localhost:11434")

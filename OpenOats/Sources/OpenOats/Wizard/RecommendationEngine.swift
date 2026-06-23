@@ -99,7 +99,7 @@ enum RecommendationEngine {
     private static func transcriptionConfig(for profile: WizardProfile, ramTier: RAMTier) -> TranscriptionConfig {
         switch profile {
         case .transcriptEN, .localENLight, .localENFull:
-            return TranscriptionConfig(model: .parakeetV2, locale: "en-US")
+            return TranscriptionConfig(model: .parakeetV3, locale: "en-US")
         case .cloudEN:
             return TranscriptionConfig(model: .assemblyAI, locale: "en-US")
         case .transcriptMulti:

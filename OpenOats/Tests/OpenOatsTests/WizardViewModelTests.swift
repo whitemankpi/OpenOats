@@ -194,7 +194,7 @@ final class WizardViewModelTests: XCTestCase {
 
         viewModel.applySettings(to: store)
 
-        XCTAssertEqual(store.transcriptionModel, .parakeetV2)
+        XCTAssertEqual(store.transcriptionModel, .parakeetV3)
         XCTAssertFalse(store.suggestionPanelEnabled)
         XCTAssertTrue(store.meetingAutoDetectEnabled)
     }
