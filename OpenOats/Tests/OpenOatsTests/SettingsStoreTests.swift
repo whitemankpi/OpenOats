@@ -288,7 +288,7 @@ final class SettingsStoreTests: XCTestCase {
 
     func testDefaultTranscriptionModel() {
         let store = makeStore()
-        XCTAssertEqual(store.transcriptionModel, .parakeetV2)
+        XCTAssertEqual(store.transcriptionModel, .parakeetV3)
     }
 
     func testTranscriptionModelRoundTrip() {
@@ -749,7 +749,7 @@ final class SettingsStoreTests: XCTestCase {
 
     func testTranscriptionModelDisplay() {
         let store = makeStore()
-        XCTAssertEqual(store.transcriptionModelDisplay, "Parakeet TDT v2")
+        XCTAssertEqual(store.transcriptionModelDisplay, "Parakeet TDT v3")
     }
 
     // MARK: - Active Model Display

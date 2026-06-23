@@ -69,12 +69,13 @@ final class AppSettingsTests: XCTestCase {
 
     func testTranscriptionModelAllCases() {
         let cases = TranscriptionModel.allCases
-        XCTAssertEqual(cases.count, 8)
+        XCTAssertEqual(cases.count, 9)
     }
 
     func testTranscriptionModelDisplayNames() {
         XCTAssertEqual(TranscriptionModel.parakeetV2.displayName, "Parakeet TDT v2")
         XCTAssertEqual(TranscriptionModel.parakeetV3.displayName, "Parakeet TDT v3")
+        XCTAssertEqual(TranscriptionModel.mlxParakeetV3.displayName, "Parakeet TDT v3 (MLX)")
         XCTAssertEqual(TranscriptionModel.qwen3ASR06B.displayName, "Qwen3 ASR 0.6B")
         XCTAssertEqual(TranscriptionModel.whisperBase.displayName, "Whisper Base")
         XCTAssertEqual(TranscriptionModel.whisperSmall.displayName, "Whisper Small")
@@ -91,6 +92,7 @@ final class AppSettingsTests: XCTestCase {
         XCTAssertTrue(TranscriptionModel.qwen3ASR06B.supportsExplicitLanguageHint)
         XCTAssertTrue(TranscriptionModel.parakeetV2.supportsExplicitLanguageHint)
         XCTAssertTrue(TranscriptionModel.parakeetV3.supportsExplicitLanguageHint)
+        XCTAssertTrue(TranscriptionModel.mlxParakeetV3.supportsExplicitLanguageHint)
         XCTAssertTrue(TranscriptionModel.whisperBase.supportsExplicitLanguageHint)
         XCTAssertTrue(TranscriptionModel.whisperSmall.supportsExplicitLanguageHint)
         XCTAssertTrue(TranscriptionModel.whisperLargeV3Turbo.supportsExplicitLanguageHint)
@@ -101,6 +103,7 @@ final class AppSettingsTests: XCTestCase {
         XCTAssertNotNil(TranscriptionModel.whisperSmall.whisperVariant)
         XCTAssertNil(TranscriptionModel.parakeetV2.whisperVariant)
         XCTAssertNil(TranscriptionModel.parakeetV3.whisperVariant)
+        XCTAssertNil(TranscriptionModel.mlxParakeetV3.whisperVariant)
         XCTAssertNil(TranscriptionModel.qwen3ASR06B.whisperVariant)
     }
 
@@ -113,6 +116,7 @@ final class AppSettingsTests: XCTestCase {
     func testTranscriptionModelLocaleFieldTitle() {
         XCTAssertEqual(TranscriptionModel.qwen3ASR06B.localeFieldTitle, "Language Hint")
         XCTAssertEqual(TranscriptionModel.parakeetV2.localeFieldTitle, "Locale")
+        XCTAssertEqual(TranscriptionModel.mlxParakeetV3.localeFieldTitle, "Locale")
         XCTAssertEqual(TranscriptionModel.whisperBase.localeFieldTitle, "Locale")
     }
 

@@ -1404,7 +1404,7 @@ final class SettingsStore {
         }
         self._transcriptionModel = TranscriptionModel(
             rawValue: defaults.string(forKey: "transcriptionModel") ?? ""
-        ) ?? .parakeetV2
+        ) ?? .parakeetV3
         self._transcriptionLocale = defaults.string(forKey: "transcriptionLocale") ?? "en-US"
         self._transcriptionCustomVocabulary = defaults.string(forKey: "transcriptionCustomVocabulary") ?? ""
         self._removeFillerWords = defaults.bool(forKey: "removeFillerWords")
